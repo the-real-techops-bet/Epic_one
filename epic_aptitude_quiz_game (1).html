@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Epic Aptitude Quiz Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #1f2933, #050814);
+      color: #f9fafb;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(15, 23, 42, 0.96);
+      border-radius: 20px;
+      padding: 24px 24px 28px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      margin: 0;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: #e5e7eb;
+      background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.4), rgba(15, 23, 42, 0.9));
+      white-space: nowrap;
+    }
+
+    .section-tag {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(55, 65, 81, 0.8);
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .section-tag span {
+      font-size: 0.7rem;
+    }
+
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(31, 41, 55, 0.9);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #22c55e, #3b82f6);
+      transition: width 0.25s ease-out;
+    }
+
+    .progress-label {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      white-space: nowrap;
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .stat-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+      margin-right: 4px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(31, 41, 55, 0.95), rgba(15, 23, 42, 0.95));
+      border-radius: 18px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 18px 18px 20px;
+      margin-bottom: 18px;
+    }
+
+    .question-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .question-index {
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+
+    .question-text {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .options {
+      display: grid;
+      gap: 8px;
+    }
+
+    .option-btn {
+      border-radius: 999px;
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 8px 12px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #e5e7eb;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+    }
+
+    .option-btn:hover {
+      background: rgba(31, 41, 55, 0.95);
+      transform: translateY(-1px);
+    }
+
+    .option-label {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(107, 114, 128, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .option-text {
+      flex: 1;
+    }
+
+    .option-btn.selected {
+      border-color: #3b82f6;
+      background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.45), rgba(15, 23, 42, 0.95));
+    }
+
+    .option-btn.correct {
+      border-color: #22c55e;
+      background: radial-gradient(circle at top left, rgba(34, 197, 94, 0.35), rgba(15, 23, 42, 0.95));
+    }
+
+    .option-btn.incorrect {
+      border-color: #ef4444;
+      background: radial-gradient(circle at top left, rgba(239, 68, 68, 0.3), rgba(15, 23, 42, 0.95));
+    }
+
+    .feedback {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+    }
+
+    .feedback span {
+      font-weight: 600;
+    }
+
+    .feedback.correct span {
+      color: #22c55e;
+    }
+
+    .feedback.incorrect span {
+      color: #ef4444;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #2563eb, #22c55e);
+      color: #f9fafb;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.45);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      box-shadow: none;
+      cursor: default;
+    }
+
+    .btn:not(:disabled):hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 35px rgba(37, 99, 235, 0.55);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: #e5e7eb;
+      box-shadow: none;
+    }
+
+    .summary {
+      margin-top: 10px;
+    }
+
+    .summary h2 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .summary-card {
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      font-size: 0.85rem;
+    }
+
+    .summary-label {
+      color: #9ca3af;
+      font-size: 0.75rem;
+      margin-bottom: 2px;
+    }
+
+    .summary-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .question-review {
+      margin-top: 12px;
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .review-item {
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 6px 0;
+      font-size: 0.8rem;
+    }
+
+    .review-item:last-child {
+      border-bottom: none;
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge.correct {
+      background: rgba(34, 197, 94, 0.16);
+      color: #4ade80;
+    }
+
+    .badge.incorrect {
+      background: rgba(248, 113, 113, 0.14);
+      color: #fb7185;
+    }
+
+    .review-question-text {
+      margin-top: 2px;
+      margin-bottom: 3px;
+    }
+
+    .review-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: #9ca3af;
+    }
+
+    .review-row span {
+      min-width: 0;
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        border-radius: 0;
+        max-width: 100%;
+        min-height: 100vh;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .footer {
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      .btn,
+      .btn-secondary {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="title-wrap">
+        <h1>Epic Aptitude Quiz — Practice Mode</h1>
+        <div class="subtitle">30 questions · Logic · Patterns · Data · Workflow Reasoning</div>
+      </div>
+      <div class="pill">Non-official practice · Single-player</div>
+    </div>
+
+    <div class="progress-row">
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <div class="progress-label" id="progressLabel"></div>
+    </div>
+
+    <div class="stats" id="statsRow"></div>
+
+    <div class="card" id="questionCard">
+      <div class="question-meta">
+        <div>
+          <div class="question-index" id="questionIndex"></div>
+          <div class="section-tag" id="sectionTag"></div>
+        </div>
+        <div class="question-index" id="scoreMini"></div>
+      </div>
+      <div class="question-text" id="questionText"></div>
+      <div class="options" id="optionsContainer"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+
+    <div class="summary" id="summary" style="display: none;"></div>
+
+    <div class="footer">
+      <button class="btn-secondary" id="restartBtn" style="display: none;">Restart Quiz</button>
+      <button class="btn" id="nextBtn" disabled>
+        <span id="nextLabel">Start</span>
+        <span>▶</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const QUESTIONS = [
+      // SECTION 1 — LOGIC & DEDUCTION
+      {
+        id: 1,
+        section: "Logic & Deduction",
+        text: "All nurses in a hospital must complete Workflow Training A. Some staff who complete Workflow Training A also complete Workflow Training B. Which statement must be true?",
+        options: [
+          "All staff who complete Training B also complete Training A",
+          "Some nurses may complete Training B",
+          "No staff can complete Training B without being a nurse",
+          "All nurses must complete Training B",
+        ],
+        answerIndex: 1,
+      },
+      {
+        id: 2,
+        section: "Logic & Deduction",
+        text: "A clinic has four rooms (1, 2, 3, 4). Each must be assigned one provider (A, B, C, D). Rules: Provider A cannot be in Room 1; Provider B must be in a lower-numbered room than Provider C; Provider D must be in Room 4. Which provider could be in Room 1?",
+        options: ["A", "B", "C", "None can be in Room 1"],
+        answerIndex: 1,
+      },
+      {
+        id: 3,
+        section: "Logic & Deduction",
+        text: "If a patient is registered before their appointment is scheduled, the appointment is invalid. A patient was registered at 08:12 and the schedule timestamp shows 08:15. What is true?",
+        options: [
+          "Appointment invalid",
+          "Appointment valid",
+          "Cannot determine",
+          "Only valid if registration is within 10 minutes of schedule",
+        ],
+        answerIndex: 1,
+      },
+      {
+        id: 4,
+        section: "Logic & Deduction",
+        text: "If: (1) All EpicCare Ambulatory patients require a visit type, and (2) No new patients have a default visit type, which is true?",
+        options: [
+          "New patients always have a visit type",
+          "Some returning patients may not have a visit type",
+          "A new patient must be assigned a visit type manually",
+          "Returning patients do not require visit types",
+        ],
+        answerIndex: 2,
+      },
+      {
+        id: 5,
+        section: "Logic & Deduction",
+        text: "Three analysts (Alex, Blake, Casey) are assigned to modules: Cadence, Prelude, and Ambulatory. Alex cannot work on Cadence. Blake must work on either Cadence or Prelude. Which module must Casey be assigned?",
+        options: ["Cadence", "Prelude", "Ambulatory", "Cannot be determined"],
+        answerIndex: 2,
+      },
+      {
+        id: 6,
+        section: "Logic & Deduction",
+        text: "A workflow requires steps in exact order: Check-in → Verify Insurance → Collect Copay → Rooming. Which of the following sequences is valid?",
+        options: [
+          "Check-in → Collect Copay → Verify Insurance → Rooming",
+          "Verify Insurance → Check-in → Collect Copay → Rooming",
+          "Check-in → Verify Insurance → Rooming → Collect Copay",
+          "None of the above",
+        ],
+        answerIndex: 3,
+      },
+      {
+        id: 7,
+        section: "Logic & Deduction",
+        text: "If every record must have exactly ONE primary diagnosis, which is possible?",
+        options: [
+          "A record with no diagnosis",
+          "A record with two primary diagnoses",
+          "A record with one primary and multiple secondary diagnoses",
+          "All of the above",
+        ],
+        answerIndex: 2,
+      },
+      {
+        id: 8,
+        section: "Logic & Deduction",
+        text: "A rule engine prioritizes alerts as: Critical > High > Medium > Low. If an order triggers Medium, High, and Low, which alert shows?",
+        options: ["Low", "Medium", "High", "Critical"],
+        answerIndex: 2,
+      },
+      {
+        id: 9,
+        section: "Logic & Deduction",
+        text: "A surgeon must be available for both a procedure and its related follow-up. Surgeon availability: Procedure Tue 1–3 PM; Follow-up Wed 9–11 AM. Schedule rules require both before booking. If the surgeon only confirms Tue 1–3 PM, what is true?",
+        options: [
+          "Appointment can be booked",
+          "Appointment cannot be booked",
+          "Appointment can be booked but follow-up unassigned",
+          "Follow-up can be booked without surgeon presence",
+        ],
+        answerIndex: 1,
+      },
+      {
+        id: 10,
+        section: "Logic & Deduction",
+        text: "A patient can only be marked 'Arrived' if they are scheduled and checked in. A patient is checked in but the appointment was mistakenly canceled. System status?",
+        options: ["Arrived", "Checked in", "Scheduled", "Cannot determine"],
+        answerIndex: 1,
+      },
+
+      // SECTION 2 — PATTERN RECOGNITION
+      {
+        id: 11,
+        section: "Pattern Recognition",
+        text: "2, 6, 18, 54, ___",
+        options: ["108", "162", "216", "324"],
+        answerIndex: 1,
+      },
+      {
+        id: 12,
+        section: "Pattern Recognition",
+        text: "4, 9, 19, 39, 79, ___",
+        options: ["139", "159", "169", "199"],
+        answerIndex: 1,
+      },
+      {
+        id: 13,
+        section: "Pattern Recognition",
+        text: "Sequence: A1, C2, F3, J4, O5, ___",
+        options: ["S6", "T6", "U6", "V6"],
+        answerIndex: 0,
+      },
+      {
+        id: 14,
+        section: "Pattern Recognition",
+        text: "Pattern: 🟦 🔵 🟦 🔵 🟦 🔵 ___",
+        options: ["🔵", "🟦", "None", "Pattern impossible"],
+        answerIndex: 0,
+      },
+      {
+        id: 15,
+        section: "Pattern Recognition",
+        text: "Which figure completes the pattern? ⬜⬛⬜⬛ | ⬛⬜⬛⬜ | ⬜⬛⬜⬛ | ___",
+        options: ["⬛⬜⬛⬜", "⬜⬛⬜⬛", "⬛⬛⬜⬜", "None"],
+        answerIndex: 0,
+      },
+
+      // SECTION 3 — READING COMPREHENSION
+      {
+        id: 16,
+        section: "Reading Comprehension",
+        text: "A clinic wants to reduce patient wait times. Analysts find that delays occur mainly during insurance verification. They recommend real-time eligibility checks and adding a second verification staff member during peak hours (8–11 AM). However, budget constraints allow hiring only one additional staff member for half the day. What is the core problem?",
+        options: [
+          "Patient check-in takes too long",
+          "Insurance verification creates delays",
+          "Staff scheduling is incorrect",
+          "Clinic hours are insufficient",
+        ],
+        answerIndex: 1,
+      },
+      {
+        id: 17,
+        section: "Reading Comprehension",
+        text: "Which solution best aligns with the clinic's constraints?",
+        options: [
+          "Hire two staff members",
+          "Hire one staff member for full day",
+          "Hire one part-time staff member for 8–11 AM",
+          "Remove insurance verification entirely",
+        ],
+        answerIndex: 2,
+      },
+      {
+        id: 18,
+        section: "Reading Comprehension",
+        text: "What assumption is implicit in the analysis?",
+        options: [
+          "Verification staff lack training",
+          "Peak hours are fixed",
+          "Patients prefer afternoon appointments",
+          "All delays come from front desk",
+        ],
+        answerIndex: 1,
+      },
+      {
+        id: 19,
+        section: "Reading Comprehension",
+        text: "If real-time eligibility checks are implemented, what is expected?",
+        options: [
+          "Verification workload decreases",
+          "More patients will be scheduled",
+          "Staff will need additional certifications",
+          "Clinic hours must increase",
+        ],
+        answerIndex: 0,
+      },
+      {
+        id: 20,
+        section: "Reading Comprehension",
+        text: "Which risk still remains after implementing real-time checks?",
+        options: [
+          "Insurance systems may fail or be slow",
+          "Patients will stop attending",
+          "More space is required",
+          "Staff will not use computers",
+        ],
+        answerIndex: 0,
+      },
+
+      // SECTION 4 — DATA & TABLE ANALYSIS
+      {
+        id: 21,
+        section: "Data & Tables",
+        text: "A report shows: Scheduled: 120; Arrived: 90; No-shows: 20; Cancellations: 10. What is the arrival rate?",
+        options: ["75%", "90 / 100", "90 / 120", "120 / 90"],
+        answerIndex: 2,
+      },
+      {
+        id: 22,
+        section: "Data & Tables",
+        text: "A workflow takes 8 minutes for insurance verification and 4 minutes for check-in. Adding one more staff member cuts verification time by 25%. New verification time?",
+        options: ["2 min", "4 min", "6 min", "8 min"],
+        answerIndex: 2,
+      },
+      {
+        id: 23,
+        section: "Data & Tables",
+        text: "If daily scheduling capacity is 240 slots and the clinic wants to reduce to 80% to avoid overbooking, how many slots remain?",
+        options: ["160", "180", "192", "200"],
+        answerIndex: 2,
+      },
+      {
+        id: 24,
+        section: "Data & Tables",
+        text: "A provider sees 18 patients/day at 20 minutes each. How much total provider time is booked?",
+        options: ["180 min", "320 min", "360 min", "400 min"],
+        answerIndex: 2,
+      },
+      {
+        id: 25,
+        section: "Data & Tables",
+        text: "A report shows 15% of referrals fail due to missing documents. Out of 220 referrals, how many fail?",
+        options: ["22", "30", "33", "15"],
+        answerIndex: 2,
+      },
+
+      // SECTION 5 — WORKFLOW REASONING
+      {
+        id: 26,
+        section: "Workflow Reasoning",
+        text: "Use the workflow: Register → Verify Coverage → Schedule Visit → Check-in → See Provider. If Verification fails, what step cannot occur?",
+        options: ["Registration", "Scheduling", "Check-in", "Seeing provider"],
+        answerIndex: 3,
+      },
+      {
+        id: 27,
+        section: "Workflow Reasoning",
+        text: "If Scheduling happens before Verification, what error might occur?",
+        options: [
+          "Duplicate MRN",
+          "Insurance mismatch",
+          "Unable to room patient",
+          "Order incorrect",
+        ],
+        answerIndex: 1,
+      },
+      {
+        id: 28,
+        section: "Workflow Reasoning",
+        text: "Which interruption invalidates the workflow?",
+        options: [
+          "Patient cancels before Register",
+          "Patient registers but does not verify",
+          "Patient checks in early",
+          "Provider runs late",
+        ],
+        answerIndex: 1,
+      },
+      {
+        id: 29,
+        section: "Workflow Reasoning",
+        text: "If a system outage occurs after Check-in but before the provider encounter, what is the correct status?",
+        options: [
+          "Visit never occurred",
+          "Patient checked in but not seen",
+          "Patient seen",
+          "Patient billed",
+        ],
+        answerIndex: 1,
+      },
+      {
+        id: 30,
+        section: "Workflow Reasoning",
+        text: "Which is a valid optimization?",
+        options: [
+          "Move 'Verify Coverage' after provider visit",
+          "Auto-run eligibility during registration",
+          "Eliminate registration step",
+          "Replace check-in with verbal confirmation",
+        ],
+        answerIndex: 1,
+      },
+    ];
+
+    let currentIndex = -1;
+    let score = 0;
+    let answeredCount = 0;
+    const answers = [];
+
+    const progressFill = document.getElementById("progressFill");
+    const progressLabel = document.getElementById("progressLabel");
+    const statsRow = document.getElementById("statsRow");
+    const questionIndexEl = document.getElementById("questionIndex");
+    const sectionTag = document.getElementById("sectionTag");
+    const scoreMini = document.getElementById("scoreMini");
+    const questionTextEl = document.getElementById("questionText");
+    const optionsContainer = document.getElementById("optionsContainer");
+    const feedbackEl = document.getElementById("feedback");
+    const nextBtn = document.getElementById("nextBtn");
+    const nextLabel = document.getElementById("nextLabel");
+    const summaryEl = document.getElementById("summary");
+    const restartBtn = document.getElementById("restartBtn");
+
+    function updateProgress() {
+      const total = QUESTIONS.length;
+      const completed = Math.max(currentIndex, 0);
+      const pct = (completed / total) * 100;
+      progressFill.style.width = pct + "%";
+      progressLabel.textContent = `${completed}/${total} complete`;
+
+      statsRow.innerHTML = `
+        <div><span class="stat-dot"></span>Score: ${score} / ${total}</div>
+        <div>Answered: ${answeredCount}</div>
+      `;
+    }
+
+    function renderQuestion() {
+      const q = QUESTIONS[currentIndex];
+      questionIndexEl.textContent = `Question ${currentIndex + 1} of ${QUESTIONS.length}`;
+      sectionTag.innerHTML = `<span>Section:</span> ${q.section}`;
+      questionTextEl.textContent = q.text;
+      optionsContainer.innerHTML = "";
+      feedbackEl.textContent = "";
+      feedbackEl.className = "feedback";
+
+      const prevAnswer = answers[currentIndex];
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `
+          <div class="option-label">${String.fromCharCode(65 + idx)}</div>
+          <div class="option-text">${opt}</div>
+        `;
+        btn.addEventListener("click", () => handleAnswer(idx));
+        optionsContainer.appendChild(btn);
+      });
+
+      scoreMini.textContent = score > 0 ? `Current score: ${score}` : "";
+      nextBtn.disabled = true;
+      nextLabel.textContent = currentIndex === -1 ? "Start" : "Next";
+
+      if (prevAnswer !== undefined) {
+        showAnswerFeedback(prevAnswer);
+      }
+    }
+
+    function handleAnswer(selectedIndex) {
+      const q = QUESTIONS[currentIndex];
+      const isCorrect = selectedIndex === q.answerIndex;
+
+      if (answers[currentIndex] === undefined) {
+        answeredCount++;
+      }
+
+      answers[currentIndex] = selectedIndex;
+      if (isCorrect) {
+        // Only increment on first correct submission
+        const previouslyCorrect = answers[currentIndex + "_correct"];
+        if (!previouslyCorrect) {
+          score++;
+          answers[currentIndex + "_correct"] = true;
+        }
+      }
+
+      showAnswerFeedback(selectedIndex);
+      updateProgress();
+    }
+
+    function showAnswerFeedback(selectedIndex) {
+      const q = QUESTIONS[currentIndex];
+      const buttons = optionsContainer.querySelectorAll(".option-btn");
+
+      buttons.forEach((btn, idx) => {
+        btn.classList.remove("selected", "correct", "incorrect");
+        if (idx === selectedIndex) {
+          btn.classList.add("selected");
+          if (idx === q.answerIndex) {
+            btn.classList.add("correct");
+          } else {
+            btn.classList.add("incorrect");
+          }
+        }
+        if (idx === q.answerIndex) {
+          btn.classList.add("correct");
+        }
+      });
+
+      const isCorrect = selectedIndex === q.answerIndex;
+      feedbackEl.className = "feedback " + (isCorrect ? "correct" : "incorrect");
+      feedbackEl.innerHTML = isCorrect
+        ? `<span>Correct!</span> Nice work — that's the best choice based on the rules given.`
+        : `<span>Not quite.</span> The best answer is <strong>${String.fromCharCode(
+            65 + q.answerIndex
+          )}</strong>.`;
+
+      nextBtn.disabled = false;
+      nextLabel.textContent = currentIndex === QUESTIONS.length - 1 ? "Finish" : "Next";
+    }
+
+    function showSummary() {
+      const total = QUESTIONS.length;
+      const percent = Math.round((score / total) * 100);
+      const accuracy = answeredCount ? Math.round((score / answeredCount) * 100) : 0;
+
+      document.getElementById("questionCard").style.display = "none";
+      summaryEl.style.display = "block";
+
+      summaryEl.innerHTML = `
+        <h2>Session Summary</h2>
+        <div class="summary-grid">
+          <div class="summary-card">
+            <div class="summary-label">Score</div>
+            <div class="summary-value">${score} / ${total}</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Percent</div>
+            <div class="summary-value">${percent}%</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Questions Answered</div>
+            <div class="summary-value">${answeredCount}</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">Accuracy on Answered</div>
+            <div class="summary-value">${accuracy}%</div>
+          </div>
+        </div>
+        <div class="question-review">
+          ${QUESTIONS.map((q, idx) => {
+            const selected = answers[idx];
+            const correct = q.answerIndex;
+            const isCorrect = selected === correct;
+            const selectedLabel =
+              selected !== undefined ? String.fromCharCode(65 + selected) : "—";
+            const correctLabel = String.fromCharCode(65 + correct);
+            return `
+              <div class="review-item">
+                <div class="review-header">
+                  <div>Q${idx + 1}: <span class="review-question-text">${q.text}</span></div>
+                  <div class="badge ${isCorrect ? "correct" : "incorrect"}">
+                    ${isCorrect ? "✔ Correct" : "✖ Review"}
+                  </div>
+                </div>
+                <div class="review-row">
+                  <span><strong>Section:</strong> ${q.section}</span>
+                  <span><strong>Your answer:</strong> ${selectedLabel}</span>
+                  <span><strong>Correct:</strong> ${correctLabel}</span>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+
+      nextBtn.style.display = "none";
+      restartBtn.style.display = "inline-flex";
+    }
+
+    function restartQuiz() {
+      currentIndex = -1;
+      score = 0;
+      answeredCount = 0;
+      for (let key in answers) delete answers[key];
+
+      document.getElementById("questionCard").style.display = "block";
+      summaryEl.style.display = "none";
+      nextBtn.style.display = "inline-flex";
+      restartBtn.style.display = "none";
+      nextLabel.textContent = "Start";
+      nextBtn.disabled = false;
+      questionTextEl.textContent = "Ready? Click Start to begin your practice session.";
+      questionIndexEl.textContent = "";
+      sectionTag.textContent = "";
+      optionsContainer.innerHTML = "";
+      feedbackEl.textContent = "";
+      scoreMini.textContent = "";
+      updateProgress();
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (currentIndex < QUESTIONS.length - 1) {
+        currentIndex++;
+        renderQuestion();
+        updateProgress();
+      } else {
+        showSummary();
+      }
+    });
+
+    restartBtn.addEventListener("click", restartQuiz);
+
+    // Initialize intro state
+    restartQuiz();
+  </script>
+</body>
+</html>
